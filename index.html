@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Organized Dark Layout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Global Styles & Variables (Card-Based Dark Theme) --- */
+        :root {
+            --background-dark: #111827;   /* Very Dark Blue/Gray */
+            --surface-dark: #1f2937;     /* Dark Blue/Gray (Cards) */
+            --surface-medium: #374151;   /* Medium Gray (Inputs, Buttons) */
+            --border-color: #4b5563;     /* Gray 600 */
+            --border-light-color: #374151; /* Gray 700 (Subtle borders within cards) */
+
+            --text-light: #f3f4f6;       /* Near White */
+            --text-normal: #d1d5db;      /* Lighter Gray */
+            --text-muted: #9ca3af;       /* Gray 400 */
+
+            --primary-accent: #a855f7;   /* Bright Purple */
+            --accent-hover: #9333ea;   /* Darker Purple */
+
+            --success-green: #34d399;    /* Tailwind green 400 */
+            --danger-red: #f87171;       /* Tailwind red 400 */
+            --warning-yellow: #fbbf24;    /* Tailwind amber 400 */
+
+            --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 8px; /* Slightly larger radius for cards */
+            --header-height: 65px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.15);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+        }
+
+        /* --- Basic Reset & Body --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; scroll-padding-top: var(--header-height); }
+        body {
+            font-family: var(--font-family); background-color: var(--background-dark);
+            color: var(--text-normal); line-height: 1.6; display: flex;
+            flex-direction: column; min-height: 100vh; overflow-x: hidden;
+        }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; } /* Standard container */
+
+        /* --- Typography & Links --- */
+        h1, h2, h3 { color: var(--text-light); margin-bottom: 1rem; font-weight: 600; }
+        h1 { font-size: 1.8rem; } h2 { font-size: 1.6rem; }
+        h3 {
+            font-size: 1.1rem; color: var(--primary-accent);
+            padding-bottom: 0; margin-bottom: 1.5rem; display: flex;
+            align-items: center; gap: 0.5rem; font-weight: 600;
+        }
+        h3 i { font-size: 0.9em; }
+        p { margin-bottom: 1rem; color: var(--text-normal); }
+        a { color: var(--primary-accent); text-decoration: none; transition: color 0.2s ease; }
+        a:hover { color: var(--accent-hover); }
+        ul { list-style: none; }
+
+        /* --- Buttons & Inputs --- */
+        button, input[type="text"] { font-family: inherit; font-size: 0.95rem; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
+        input[type="text"] { padding: 0.8rem 1rem; background-color: var(--surface-medium); color: var(--text-light); width: 100%; transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease; }
+        input::placeholder { color: var(--text-muted); opacity: 0.8; }
+        input[type="text"]:focus { outline: none; border-color: var(--primary-accent); background-color: var(--surface-dark); box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.4); }
+        button {
+            padding: 0.8rem 1.3rem; background-color: var(--primary-accent); color: #ffffff;
+            border-color: var(--primary-accent); cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+            font-weight: 600; font-size: 0.9rem; text-align: center; box-shadow: var(--shadow-sm);
+        }
+        button:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); box-shadow: var(--shadow-md); }
+        button:active { transform: scale(0.97); } button i { font-size: 1em; }
+
+        /* --- Header --- */
+        header { background-color: var(--surface-dark); padding: 0; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; height: var(--header-height); box-shadow: var(--shadow-sm); }
+        header .container { display: flex; justify-content: space-between; align-items: center; height: 100%; padding: 0 15px; }
+        .logo-area { display: flex; align-items: baseline; flex-shrink: 0; }
+        header h1 { margin-bottom: 0; display: flex; align-items: center; gap: 0.7rem; font-size: 1.6rem; }
+        header h1 i { color: var(--accent-hover); }
+        header .tagline { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; margin-left: 0.8rem; white-space: nowrap; }
+
+        /* --- Main Navigation --- */
+        nav.main-nav { flex-grow: 1; display: flex; justify-content: flex-end; }
+        nav.main-nav ul { display: flex; align-items: center; list-style: none; margin: 0; padding: 0; }
+        nav.main-nav li { margin-left: 0.5rem; }
+        nav.main-nav a { color: var(--text-normal); text-decoration: none; padding: 0.8rem 1rem; border-radius: var(--border-radius); font-size: 0.95rem; font-weight: 500; transition: background-color 0.2s ease, color 0.2s ease; position: relative; display: inline-block; white-space: nowrap; }
+        nav.main-nav a:hover, nav.main-nav a:focus { background-color: var(--surface-medium); color: var(--text-light); outline: none; }
+
+        /* --- Notification Badge --- */
+        .badge { background-color: var(--danger-red); color: white; border-radius: 50%; padding: 0.1em 0.45em; font-size: 0.75em; font-weight: 700; position: absolute; top: 5px; right: 5px; line-height: 1; min-width: 18px; text-align: center; display: inline-flex; align-items: center; justify-content: center; }
+
+        /* --- Mobile Menu Button --- */
+        #mobile-menu-toggle { display: none; background: none; border: none; color: var(--text-light); font-size: 1.6rem; cursor: pointer; padding: 0.5rem; margin-left: 1rem; }
+
+        /* --- Intro Section (Hero Styling Re-applied) --- */
+        #intro {
+            padding: 3rem 1.5rem; /* More padding */
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(rgba(31, 41, 55, 0.8), rgba(31, 41, 55, 0.95)), /* Dark overlay */
+                        url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1673&q=80') /* Background image */
+                        no-repeat center center/cover;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg); /* Larger shadow for hero */
+            text-align: center;
+        }
+        #intro h2 {
+            color: #ffffff; /* Pure white heading */
+            margin-bottom: 0;
+            font-size: 2rem; /* Larger heading */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); /* Text shadow for readability */
+        }
+        #intro h2 .student-name {
+            color: var(--primary-accent);
+            font-weight: 700;
+        }
+
+        /* --- Main Content Area Layout (2 Columns) --- */
+        main.container {
+            margin-bottom: 2.5rem; display: flex;
+            gap: 2rem; flex-grow: 1; align-items: flex-start;
+            margin-top: 0; /* Remove top margin */
+        }
+        .main-content {
+            flex: 2.5; display: flex; flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sidebar {
+            flex: 1; display: flex; flex-direction: column;
+            gap: 1.5rem; position: sticky;
+            top: calc(var(--header-height) + 20px);
+            max-height: calc(100vh - var(--header-height) - 40px);
+        }
+
+        /* --- Card Styling --- */
+        .card {
+            background-color: var(--surface-dark);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+        .card h3 {
+            margin-top: 0; margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light-color);
+            padding-bottom: 0.8rem;
+        }
+
+        /* Remove individual section padding/bg/shadow */
+        #task-manager, #projects, #calendar-section, #upcoming-deadlines, #notifications {
+            background-color: transparent; padding: 0; border: none; box-shadow: none; border-radius: 0;
+        }
+
+        /* --- Task Form Refined --- */
+        #task-form { background-color: transparent; padding: 0; border: none; margin-bottom: 0; }
+        .form-row { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9em; color: var(--text-muted); font-weight: 500; }
+        .task-input-group { flex: 1 1 250px; }
+        .date-input-group { flex: 0 1 180px; }
+        .add-task-btn { flex-shrink: 0; }
+
+        /* --- Task List Container --- */
+        .task-list-container { margin-top: 0; }
+
+        /* --- Task Controls Refined --- */
+        .task-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding: 0.8rem 0; border-bottom: 1px solid var(--border-light-color); border-top: 1px solid var(--border-light-color); flex-wrap: wrap; gap: 1rem; background-color: transparent; }
+        .filter-buttons, .task-actions { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+        .controls-label { font-size: 0.9em; color: var(--text-muted); font-weight: 500; }
+        .filter-buttons button { background: var(--surface-medium); border: 1px solid var(--border-color); color: var(--text-normal); padding: 0.4rem 0.9rem; font-size: 0.85rem; font-weight: 500; transition: all 0.2s ease; box-shadow: none; }
+        .filter-buttons button:hover, .filter-buttons button:focus { background-color: var(--border-color); color: var(--text-light); outline: none; }
+        .filter-buttons button.active { background-color: var(--primary-accent); border-color: var(--primary-accent); color: #ffffff; font-weight: 600; box-shadow: var(--shadow-sm); }
+        .task-actions { gap: 1rem; }
+        .task-summary { font-size: 0.9em; color: var(--text-muted); white-space: nowrap; }
+        #clear-completed-btn { background-color: transparent; border: 1px solid var(--danger-red); color: var(--danger-red); font-size: 0.85rem; padding: 0.4rem 0.9rem; box-shadow: none; }
+        #clear-completed-btn:hover, #clear-completed-btn:focus { background-color: rgba(248, 113, 113, 0.1); color: #fca5a5; outline: none; }
+        #clear-completed-btn i { margin-right: 0.3rem;}
+
+        /* --- Task List & Items --- */
+        #task-list { margin-top: 1rem; padding: 0; }
+        .task-item { background-color: var(--surface-medium); padding: 1rem 1.3rem; margin-bottom: 1rem; border: 1px solid var(--border-color); border-left: 4px solid var(--border-color); border-radius: var(--border-radius); display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s ease, border-left-color 0.2s ease, opacity 0.3s ease, box-shadow 0.2s ease; gap: 1rem; box-shadow: var(--shadow-sm); }
+        .task-item:hover { background-color: var(--surface-dark); border-color: var(--text-muted); box-shadow: var(--shadow-md); }
+        .task-item .priority-btn { cursor: pointer; color: var(--text-muted); font-size: 1.1rem; transition: color 0.2s ease, transform 0.2s ease; padding: 0 0.2rem; }
+        .task-item .priority-btn:hover { transform: scale(1.2); color: var(--warning-yellow);}
+        .task-item.priority .priority-btn { color: var(--warning-yellow); }
+        .task-item.priority { border-left-color: var(--warning-yellow); background-color: rgba(251, 191, 36, 0.05); }
+        .task-item .task-text { flex-grow: 1; cursor: pointer; word-break: break-word; color: var(--text-light); font-weight: 500; }
+        .task-item .due-date { font-size: 0.85em; color: var(--text-muted); white-space: nowrap; background-color: var(--surface-dark); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 500;}
+        .task-item.completed { border-left-color: var(--success-green); opacity: 0.65; }
+        .task-item.completed .task-text { text-decoration: line-through; color: var(--text-muted); font-weight: 400;}
+        .task-item.completed .due-date { text-decoration: line-through; }
+        .task-item.completed:hover { opacity: 0.75; }
+        .task-item:not(.completed).overdue .due-date { color: #ffffff; background-color: var(--danger-red); font-weight: 600; border: none; }
+        .task-item:not(.completed).overdue { border-left-color: var(--danger-red); }
+        .task-item .delete-btn { background: none; border: none; color: var(--text-muted); padding: 0.3rem 0.5rem; cursor: pointer; font-size: 1rem; transition: color 0.2s ease, transform 0.1s ease; }
+        .task-item .delete-btn:hover { color: var(--danger-red); transform: scale(1.1); }
+
+        /* --- Placeholder Content (Projects/Notifications) --- */
+        .placeholder-content { color: var(--text-muted); font-style: italic; text-align: center; padding: 1.5rem 1rem; border: 2px dashed var(--border-light-color); border-radius: var(--border-radius); background-color: rgba(17, 24, 39, 0.3); margin-top: 1rem; }
+        .placeholder-content p { margin-bottom: 0.5rem; font-style: normal; }
+        .placeholder-content p:last-child { font-style: italic; font-size: 0.9em; }
+
+        /* --- Column Section Styles --- */
+        .card h3 { font-size: 1.1rem; border-bottom-color: var(--border-light-color); padding-bottom: 0.8rem; margin-bottom: 1.5rem; font-weight: 600; }
+        #notification-list { list-style: none; padding: 0; max-height: 180px; overflow-y: auto; }
+        #notification-list li { font-size: 0.9em; padding: 0.6rem 0.3rem; border-bottom: 1px dashed var(--border-light-color); color: var(--text-normal); }
+        #notification-list li:last-child { border-bottom: none; }
+        #notification-list li .notif-time { color: var(--text-muted); font-size: 0.9em; margin-right: 0.5rem; font-weight: 500; }
+        #notification-list li i { color: var(--text-muted); font-style: normal; }
+        #notification-list li.notif-overdue { color: var(--danger-red); font-weight: 500; }
+        #upcoming-list { list-style: none; padding: 0; max-height: 180px; overflow-y: auto; }
+        #upcoming-list li { font-size: 0.9em; padding: 0.6rem 0.3rem; border-bottom: 1px dashed var(--border-light-color); display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+        #upcoming-list li:last-child { border-bottom: none; }
+        #upcoming-list li .task-name { color: var(--text-light); word-break: break-word; }
+        #upcoming-list li .due { color: var(--text-muted); white-space: nowrap; font-weight: 600; font-size: 0.9em; }
+        #upcoming-list li .overdue { color: var(--danger-red); }
+        #upcoming-list li i { color: var(--text-muted); font-style: normal; }
+
+        /* --- Footer --- */
+        footer { background-color: var(--surface-dark); color: var(--text-muted); text-align: center; padding: 1.8rem 0; margin-top: auto; border-top: 1px solid var(--border-color); font-size: 0.9em; }
+
+        /* --- Flatpickr Dark Theme --- */
+        .flatpickr-calendar { background: var(--surface-dark); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); color: var(--text-light); border-radius: var(--border-radius); }
+        .flatpickr-months .flatpickr-month, .flatpickr-current-month .flatpickr-monthDropdown-months, .flatpickr-current-month input.cur-year { color: var(--text-light); fill: var(--text-light); font-weight: 600; }
+        .flatpickr-months .flatpickr-prev-month svg, .flatpickr-months .flatpickr-next-month svg { fill: var(--primary-accent) !important; }
+        .flatpickr-months .flatpickr-prev-month:hover svg, .flatpickr-months .flatpickr-next-month:hover svg{ fill: var(--accent-hover) !important; }
+        span.flatpickr-weekday { color: var(--text-muted); font-weight: 600; font-size: 0.9em; text-transform: uppercase; }
+        .flatpickr-day { color: var(--text-normal); border: 1px solid transparent; border-radius: 4px; }
+        .flatpickr-day:hover, .flatpickr-day:focus { background: var(--surface-medium); border-color: var(--surface-medium); color: var(--text-light); outline: none; }
+        .flatpickr-day.today { border-color: var(--primary-accent); color: var(--primary-accent); font-weight: 700; }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { background: var(--primary-accent); border-color: var(--primary-accent); color: #ffffff; font-weight: 600; }
+        .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+        .flatpickr-day.flatpickr-disabled, .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay { color: var(--text-muted); opacity: 0.5; font-weight: 400;}
+        .flatpickr-calendar.inline { background: transparent; box-shadow: none; border: 1px solid var(--border-light-color); width: 100%; padding: 0.5rem;} /* Subtle border for inline */
+        #inline-datepicker { color: var(--text-muted); cursor: default; }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 992px) { /* Tablet: Stack sidebar below main */
+            html { scroll-padding-top: 0; }
+            header { position: static; height: auto; box-shadow: var(--shadow-sm); }
+            header .container { height: auto; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+            main.container { flex-direction: column; margin-top: 1.5rem; gap: 1.5rem; }
+            .main-content { flex: auto; } /* Reset flex */
+            .sidebar { position: static; width: 100%; max-height: none; overflow-y: visible; }
+        }
+
+        @media (max-width: 768px) { /* Mobile: Stack everything, adjust nav */
+             header .container { flex-wrap: wrap; }
+            .logo-area { flex-grow: 1; }
+            header h1 { font-size: 1.4rem; }
+            header .tagline { display: none; }
+
+            nav.main-nav { display: none; order: 3; width: 100%; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: var(--surface-dark); border-top: 1px solid var(--border-color); box-shadow: var(--shadow-md); }
+            nav.main-nav.active { display: block; max-height: 500px; }
+            nav.main-nav ul { flex-direction: column; align-items: stretch; width: 100%; padding: 0.5rem 0; }
+            nav.main-nav li { margin-left: 0; width: 100%; }
+            nav.main-nav a { display: block; padding: 1rem 1.5rem; border-radius: 0; border-bottom: 1px solid var(--border-color); text-align: center; color: var(--text-light); }
+            nav.main-nav li:last-child a { border-bottom: none; }
+            nav.main-nav a:hover { background-color: var(--surface-medium); }
+            .badge { top: 50%; right: 15px; transform: translateY(-50%); }
+            #mobile-menu-toggle { display: block; order: 2; }
+
+            .card { padding: 1rem 1.5rem; } /* Reduce card padding */
+            /* Removed breadcrumb padding adjustments */
+        }
+
+        @media (max-width: 576px) { /* Small phone adjustments */
+            #intro { padding: 1.5rem; }
+            #intro h2 { font-size: 1.6rem; }
+            .form-row { flex-direction: column; align-items: stretch; gap: 1rem;}
+            .add-task-btn { width: 100%; justify-content: center; }
+            .filter-buttons { flex-wrap: nowrap; }
+            .filter-buttons button { flex-grow: 1; margin: 0 0.2rem; }
+            .task-actions { flex-direction: column; gap: 0.8rem; align-items: center; }
+            #clear-completed-btn { width: auto; }
+            .task-item { flex-wrap: wrap; }
+            .task-item .task-text { flex-basis: 100%; order: 1; margin-bottom: 0.3rem;}
+            .task-item .priority-btn { order: 0; }
+            .task-item .due-date { order: 2; margin-right: auto; }
+            .task-item .delete-btn { order: 3; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo-area"> <h1><i class="fas fa-check-double"></i> TaskMaster</h1>
+                <span class="tagline">Conquer Your Coursework</span>
+            </div>
+            <nav class="main-nav"> <ul>
+                    <li><a href="#intro">Home</a></li>
+                    <li><a href="#task-manager-card">Tasks</a></li>
+                    <li><a href="#calendar-card">Calendar</a></li>
+                    <li><a href="#projects-card">Projects</a></li>
+                    <li>
+                        <a href="#notifications-card">
+                            Notifications
+                            <span class="badge" id="notification-badge" style="display: none;">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <button id="mobile-menu-toggle" aria-label="Toggle Menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <section id="intro" class="container">
+        <h2>Welcome back, <span class="student-name">[Student]</span>!</h2>
+        </section>
+
+    <main class="container">
+
+        <div class="main-content">
+            <div class="card" id="task-input-card">
+                 <section id="task-manager">
+                    <form id="task-form">
+                        <div class="form-row">
+                            <div class="form-group task-input-group">
+                                <label for="task-input">Log New Task / Assignment:</label>
+                                <input type="text" id="task-input" placeholder="e.g., Finish essay, Study for quiz..." required>
+                            </div>
+                            <div class="form-group date-input-group">
+                                <label for="task-due-date">Due Date:</label>
+                                <input type="text" id="task-due-date" class="datepicker" placeholder="Optional">
+                            </div>
+                            <button type="submit" title="Add Task" class="add-task-btn"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                    </form>
+                 </section>
+            </div>
+
+            <div class="card" id="task-manager-card">
+                <div class="task-list-container">
+                    <h3><i class="fas fa-tasks"></i> Assignment Tracker</h3>
+                    <div class="task-controls">
+                        <div class="filter-buttons">
+                            <span class="controls-label">Show:</span>
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="pending">Pending</button>
+                            <button class="filter-btn" data-filter="completed">Completed</button>
+                        </div>
+                        <div class="task-actions">
+                            <span id="task-counts">Tasks: 0 Total</span>
+                            <button id="clear-completed-btn" title="Remove Completed Tasks"><i class="fas fa-check-circle"></i> Clear Done</button>
+                        </div>
+                    </div>
+                    <ul id="task-list">
+                        </ul>
+                </div>
+            </div>
+
+             <div class="card" id="projects-card">
+                 <section id="projects">
+                    <h3><i class="fas fa-project-diagram"></i> Projects Overview</h3>
+                    <div class="placeholder-content">
+                        <p>Manage larger projects and group related tasks here.</p>
+                        <p><i>(Project tracking features coming soon!)</i></p>
+                    </div>
+                 </section>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+             <div class="card" id="calendar-card">
+                 <section id="calendar-section">
+                    <h3><i class="far fa-calendar-alt"></i> Deadline Dashboard</h3>
+                    <div id="calendar-placeholder">
+                         <div class="static-calendar">
+                            <input type="text" id="inline-datepicker" placeholder="View Calendar">
+                         </div>
+                    </div>
+                 </section>
+             </div>
+
+             <div class="card" id="upcoming-card">
+                 <section id="upcoming-deadlines">
+                    <h3><i class="fas fa-stopwatch"></i> Due Soon!</h3>
+                    <ul id="upcoming-list">
+                        <li><i>No assignments due soon. Plan ahead!</i></li>
+                    </ul>
+                 </section>
+             </div>
+
+             <div class="card" id="notifications-card">
+                 <section id="notifications">
+                     <h3><i class="fas fa-bell"></i> Notifications</h3>
+                     <div class="placeholder-content" style="padding: 0.5rem; border-style: solid; background: none;"> <ul id="notification-list">
+                            <li><i>No new notifications.</i></li>
+                        </ul>
+                     </div>
+                 </section>
+             </div>
+        </aside>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> TaskMaster. Stay organized, stay focused!</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        /**
+         * TaskMaster - Student Task Management Script (Card-Based Dark Theme - No Breadcrumbs)
+         * Handles task adding, deleting, completion, priority, filtering,
+         * persistence (localStorage), date picking, overdue checks,
+         * upcoming deadlines, notifications badge, and mobile navigation.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const taskForm = document.getElementById('task-form');
+            const taskInput = document.getElementById('task-input');
+            const taskDueDateInput = document.getElementById('task-due-date');
+            const taskList = document.getElementById('task-list');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const taskCountsSpan = document.getElementById('task-counts');
+            const clearCompletedBtn = document.getElementById('clear-completed-btn');
+            const upcomingList = document.getElementById('upcoming-list');
+            const currentYearSpan = document.getElementById('current-year');
+            const inlineDatepickerInput = document.getElementById('inline-datepicker');
+            const notificationBadge = document.getElementById('notification-badge');
+            const notificationList = document.getElementById('notification-list');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mainNav = document.querySelector('nav.main-nav');
+
+            // --- Constants ---
+            const STORAGE_KEY = 'studentTasks_v3_card_dark_nb'; // Unique key
+            const UPCOMING_DAYS = 7;
+
+            // --- State ---
+            let currentFilter = 'all';
+            const studentName = "Student"; // Placeholder
+            document.querySelector("#intro h2 .student-name").textContent = studentName;
+
+            // --- Initialize Libraries ---
+            const mainDatepicker = flatpickr(taskDueDateInput, {
+                dateFormat: "Y-m-d", altInput: true, altFormat: "M d, Y", allowInput: true,
+            });
+            const inlineDatepicker = flatpickr(inlineDatepickerInput, {
+                 inline: true, dateFormat: "Y-m-d",
+            });
+
+            // --- Core Functions (Mostly unchanged) ---
+
+            function saveTasks() {
+                const tasks = [];
+                taskList.querySelectorAll('.task-item').forEach(item => {
+                    const taskTextSpan = item.querySelector('.task-text');
+                    if (taskTextSpan) {
+                         tasks.push({
+                            id: item.dataset.id, text: taskTextSpan.textContent,
+                            dueDate: item.dataset.date || null, completed: item.classList.contains('completed'),
+                            priority: item.classList.contains('priority')
+                        });
+                    }
+                });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+            }
+
+            function loadTasks() {
+                const storedTasks = localStorage.getItem(STORAGE_KEY);
+                taskList.innerHTML = '';
+                if (storedTasks) {
+                    try {
+                        const tasks = JSON.parse(storedTasks);
+                        tasks.forEach(task => { if (task.text) { addTaskToList(task.text, task.dueDate, task.completed, task.priority, task.id, true); }});
+                    } catch (error) { console.error("Error parsing stored tasks:", error); localStorage.removeItem(STORAGE_KEY); }
+                }
+                filterTasks(currentFilter); checkOverdueTasks(); runAllUpdates();
+            }
+
+            function addTaskToList(text, dueDate, completed, priority, id, isLoading = false) {
+                if (!text || text.trim() === '') return;
+                const taskId = id || Date.now().toString();
+                const li = document.createElement('li');
+                li.className = `task-item ${completed ? 'completed' : ''} ${priority ? 'priority' : ''}`;
+                li.dataset.id = taskId; if (dueDate) li.dataset.date = dueDate;
+                const priorityBtn = document.createElement('span'); priorityBtn.className = 'priority-btn'; priorityBtn.title = 'Toggle Priority'; priorityBtn.role = 'button'; priorityBtn.tabIndex = 0; priorityBtn.innerHTML = `<i class="${priority ? 'fas' : 'far'} fa-star"></i>`; li.appendChild(priorityBtn);
+                const textSpan = document.createElement('span'); textSpan.className = 'task-text'; textSpan.textContent = text; textSpan.role = 'button'; textSpan.tabIndex = 0; li.appendChild(textSpan);
+                if (dueDate) { const dateSpan = document.createElement('span'); dateSpan.className = 'due-date'; try { const dateObj = flatpickr.parseDate(dueDate, "Y-m-d"); if (!dateObj) throw new Error("Invalid date"); dateSpan.textContent = `[${flatpickr.formatDate(dateObj, "M d")}]`; } catch(e) { dateSpan.textContent = '[Invalid Date]'; } li.appendChild(dateSpan); }
+                const deleteBtn = document.createElement('button'); deleteBtn.className = 'delete-btn'; deleteBtn.title = 'Delete Task'; deleteBtn.setAttribute('aria-label', 'Delete Task'); deleteBtn.innerHTML = '<i class="fas fa-times"></i>'; li.appendChild(deleteBtn);
+                addEventListenersToTaskItem(li); taskList.prepend(li);
+                if (!isLoading) { saveTasks(); checkOverdueTasks(); runAllUpdates(); filterTasks(currentFilter); }
+            }
+
+            function addEventListenersToTaskItem(item) {
+                const textSpan = item.querySelector('.task-text'); const deleteBtn = item.querySelector('.delete-btn'); const priorityBtn = item.querySelector('.priority-btn');
+                const handleToggleComplete = () => { item.classList.toggle('completed'); checkOverdueTasks(); saveTasks(); runAllUpdates(); filterTasks(currentFilter); };
+                if (textSpan) { textSpan.addEventListener('click', handleToggleComplete); textSpan.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggleComplete(); } }); }
+                if (deleteBtn) { deleteBtn.addEventListener('click', () => { item.remove(); saveTasks(); runAllUpdates(); }); }
+                const handleTogglePriority = () => { item.classList.toggle('priority'); priorityBtn.innerHTML = `<i class="${item.classList.contains('priority') ? 'fas' : 'far'} fa-star"></i>`; saveTasks(); };
+                if (priorityBtn) { priorityBtn.addEventListener('click', handleTogglePriority); priorityBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTogglePriority(); } }); }
+            }
+
+            function runAllUpdates() { updateTaskCounts(); updateUpcomingDeadlines(); updateNotifications(); }
+
+            function updateTaskCounts() { const allTasks = taskList.querySelectorAll('.task-item'); const completedTasks = taskList.querySelectorAll('.task-item.completed'); const pendingTasks = allTasks.length - completedTasks.length; taskCountsSpan.textContent = `Tasks: ${pendingTasks} Pending / ${completedTasks.length} Completed`; }
+
+            function filterTasks(filter) { currentFilter = filter; const tasks = taskList.querySelectorAll('.task-item'); tasks.forEach(task => { const isCompleted = task.classList.contains('completed'); let show = (filter === 'all') || (filter === 'completed' && isCompleted) || (filter === 'pending' && !isCompleted); task.style.display = show ? 'flex' : 'none'; }); filterButtons.forEach(button => { button.classList.toggle('active', button.dataset.filter === filter); }); }
+
+            function checkOverdueTasks() { const tasks = taskList.querySelectorAll('.task-item'); const today = new Date(); today.setHours(0, 0, 0, 0); let overdueChanged = false; tasks.forEach(task => { const dueDateStr = task.dataset.date; const isCompleted = task.classList.contains('completed'); const wasOverdue = task.classList.contains('overdue'); let isOverdue = false; if (dueDateStr && !isCompleted) { try { const dueDate = flatpickr.parseDate(dueDateStr, "Y-m-d"); if (!dueDate) throw new Error("Invalid date"); dueDate.setHours(0,0,0,0); if (dueDate < today) isOverdue = true; } catch(e) { isOverdue = false; } } if (isOverdue !== wasOverdue) { task.classList.toggle('overdue', isOverdue); overdueChanged = true; } }); return overdueChanged; }
+
+            function updateUpcomingDeadlines() { const tasks = []; taskList.querySelectorAll('.task-item:not(.completed)').forEach(item => { if(item.dataset.date) { tasks.push({ text: item.querySelector('.task-text').textContent, dueDate: item.dataset.date }); } }); const upcomingTasks = []; const today = new Date(); today.setHours(0,0,0,0); const cutOffDate = new Date(today); cutOffDate.setDate(today.getDate() + UPCOMING_DAYS); tasks.forEach(task => { try { const dueDate = flatpickr.parseDate(task.dueDate, "Y-m-d"); if (!dueDate) throw new Error("Invalid date"); dueDate.setHours(0,0,0,0); if (dueDate >= today && dueDate < cutOffDate) { upcomingTasks.push({ ...task, dateObj: dueDate }); } } catch(e) { /* Ignore */ } }); upcomingTasks.sort((a, b) => a.dateObj - b.dateObj); upcomingList.innerHTML = ''; if (upcomingTasks.length === 0) { upcomingList.innerHTML = '<li><i>No assignments due soon. Plan ahead!</i></li>'; } else { upcomingTasks.forEach(task => { const li = document.createElement('li'); const nameSpan = document.createElement('span'); nameSpan.className = 'task-name'; nameSpan.textContent = task.text; const dateSpan = document.createElement('span'); dateSpan.className = 'due'; if (task.dateObj < today) dateSpan.classList.add('overdue'); dateSpan.textContent = `(${flatpickr.formatDate(task.dateObj, "M d")})`; li.appendChild(nameSpan); li.appendChild(dateSpan); upcomingList.appendChild(li); }); } }
+
+            function updateNotifications() { let notificationCount = 0; const notifications = []; const overdueTasks = taskList.querySelectorAll('.task-item.overdue:not(.completed)'); overdueTasks.forEach(task => { const taskText = task.querySelector('.task-text').textContent; const truncatedText = taskText.length > 30 ? taskText.substring(0, 27) + '...' : taskText; notifications.push({ type: 'overdue', text: `Task "${truncatedText}" is overdue!` }); notificationCount++; }); notificationList.innerHTML = ''; if (notifications.length === 0) { notificationList.innerHTML = '<li><i>No new notifications.</i></li>'; } else { notifications.sort((a, b) => (a.type === 'overdue' ? -1 : 1)); notifications.forEach(notif => { const li = document.createElement('li'); if (notif.type === 'overdue') li.classList.add('notif-overdue'); li.appendChild(document.createTextNode(notif.text)); notificationList.appendChild(li); }); } if (notificationCount > 0) { notificationBadge.textContent = notificationCount; notificationBadge.style.display = 'inline-flex'; } else { notificationBadge.style.display = 'none'; } }
+
+            // --- Event Listeners ---
+            taskForm.addEventListener('submit', (e) => { e.preventDefault(); const taskText = taskInput.value.trim(); const dueDateValue = mainDatepicker.selectedDates[0] ? flatpickr.formatDate(mainDatepicker.selectedDates[0], "Y-m-d") : null; if (taskText) { addTaskToList(taskText, dueDateValue, false, false); taskInput.value = ''; mainDatepicker.clear(); taskInput.focus(); } });
+            filterButtons.forEach(button => { button.addEventListener('click', () => filterTasks(button.dataset.filter)); });
+            clearCompletedBtn.addEventListener('click', () => { const completedTasks = taskList.querySelectorAll('.task-item.completed'); if (completedTasks.length === 0) return; completedTasks.forEach(item => { item.remove(); }); saveTasks(); runAllUpdates(); });
+            if (mobileMenuToggle && mainNav) { mobileMenuToggle.addEventListener('click', () => { const isActive = mainNav.classList.toggle('active'); mobileMenuToggle.setAttribute('aria-expanded', isActive); const icon = mobileMenuToggle.querySelector('i'); icon.className = `fas ${isActive ? 'fa-times' : 'fa-bars'}`; }); mainNav.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { if (mainNav.classList.contains('active')) { mainNav.classList.remove('active'); mobileMenuToggle.querySelector('i').className = 'fas fa-bars'; mobileMenuToggle.setAttribute('aria-expanded', 'false'); } }); }); document.addEventListener('click', (event) => { if (!mainNav.contains(event.target) && !mobileMenuToggle.contains(event.target) && mainNav.classList.contains('active')) { mainNav.classList.remove('active'); mobileMenuToggle.querySelector('i').className = 'fas fa-bars'; mobileMenuToggle.setAttribute('aria-expanded', 'false'); } }); }
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
+
+            // --- Initial Load ---
+            loadTasks();
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>
